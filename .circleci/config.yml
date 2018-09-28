@@ -18,6 +18,6 @@ jobs:
             mv /tmp/docker/* /usr/bin
 	### build and push Docker image
       - run: |
-	  docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker build -t cuongtv/nginx-test:$CIRCLE_BRANCH .
-	  docker push cuongtv/nginx-test:$CIRCLE_BRANCH
+          docker push cuongtv/nginx-test:$CIRCLE_BRANCH
