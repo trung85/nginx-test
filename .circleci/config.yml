@@ -17,6 +17,6 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker login -u cuongtv -p Taokhongbiet@1
           docker build -t cuongtv/nginx-test:$CIRCLE_BRANCH .
           docker push cuongtv/nginx-test:$CIRCLE_BRANCH
