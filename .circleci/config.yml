@@ -7,7 +7,7 @@ jobs:
       - checkout # check out the code in the project directory
 #      - run: echo "hello world" # run the `echo` command
       - setup_remote_docker"
-	docker_layer_caching: true
+          docker_layer_caching: true
       - run:
           name: Install Docker client
           command: |
