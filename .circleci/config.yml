@@ -20,7 +20,7 @@ jobs:
             mv /tmp/docker/* /usr/bin
       - run: |
           docker build -t app .
-          docker push cuongtv/nginx-test:$CIRCLE_BRANCH
+#          docker push cuongtv/nginx-test:$CIRCLE_BRANCH
       - run: |
           name: Push Docker image
           command: |
