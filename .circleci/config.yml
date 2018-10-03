@@ -21,7 +21,7 @@ jobs:
       - run: |
           docker build -t app .
 #          docker push cuongtv/nginx-test:$CIRCLE_BRANCH
-      - run: |
+      - run:
           name: Push Docker image
           command: |
             #login aws
