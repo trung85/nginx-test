@@ -2,12 +2,19 @@ version: 2
 jobs:
   build:
     docker: # use the docker executor type; machine and macos executors are also supported
-      - image: cuongtv/nginx-test # the primary container, where your job's commands are run
+      - image: 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci # the primary container, where your job's commands are run
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
     steps:
       - checkout # check out the code in the project directory
-#      - run: echo "hello world" # run the `echo` command
       - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --no-cache py-pip=9.0.0-r1
+            pip install awscli==1.11.76
       - run:
           name: Install Docker client
           command: |
@@ -17,6 +24,15 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - run: |
-          docker login -u cuongtv -p Taokhongbiet@1
-          docker build -t cuongtv/nginx-test:$CIRCLE_BRANCH .
+          docker build -t app .
           docker push cuongtv/nginx-test:$CIRCLE_BRANCH
+      - deploy: |
+          name: Push Docker image
+          command: |
+            #login aws
+            aws configure set region $AWS_REGION
+            $(aws ecr get-login)
+          
+            #tag
+            docker tag app 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH
+            docker push 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH
