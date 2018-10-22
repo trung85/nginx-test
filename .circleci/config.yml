@@ -31,3 +31,4 @@ jobs:
             #tag
             docker tag app 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
             docker push 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
+            ./deploy.sh
