@@ -3,7 +3,7 @@
 #CLUSTER_NAME=$CLUSTER_NAME
 #BUILD_NUMBER=${CIRCLE_BUILD_NUM}
 #IMAGE_TAG=${CIRCLE_SHA1}
-#TASK_FAMILY=$TASK_FAMILY
+TASK_FAMILY=cuongtv-fargate
 
 # Create a new task definition for this build
 sed -e "s/%IMAGE_TAG%/${IMAGE_TAG}/g; s/%AWS_ACCOUNT%/$AWS_ACCOUNT/g; s/%AWS_REGION%/$AWS_REGION/g; s/%AWS_REPO%/$AWS_REPO/g; s/%BRANCH%/$CIRCLE_BRANCH/g" fargate-template-task.json > task-${BUILD_NUMBER}.json
