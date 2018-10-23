@@ -2,10 +2,7 @@ version: 2
 jobs:
   build:
     docker: # use the docker executor type; machine and macos executors are also supported
-      - image: 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci # the primary container, where your job's commands are run
-        aws_auth:
-          aws_access_key_id: $AWS_ACCESS_KEY_ID
-          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+      - image: ubuntu:16.04 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
       - setup_remote_docker:
@@ -18,17 +15,26 @@ jobs:
             curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
+      - run:
+          name: Install aws cli
+          command: |
+            apt-get update
+            apt-get install -y python3
+            pip install awscli --upgrade --user
       - run: |
           docker build -t app .
-#          docker push cuongtv/nginx-test:$CIRCLE_BRANCH
       - deploy:
           name: Push Docker image
           command: |
-            #login aws
+            # login aws
             aws configure set region $AWS_REGION
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             $(aws ecr get-login)
           
-            #tag
+            # push image to ecr
             docker tag app 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
             docker push 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
+
+            # deploy
             sh deploy.sh
