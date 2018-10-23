@@ -27,7 +27,7 @@ jobs:
             pip install awscli --upgrade --user
       - run: |
           docker build -t app .
-      - deploy:
+      - run:
           name: Push Docker image
           command: |
             # login aws
@@ -40,5 +40,8 @@ jobs:
             docker tag app 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
             docker push 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
 
+      - run:
+          name: deploy
+          command: |
             # deploy
             sh deploy.sh
