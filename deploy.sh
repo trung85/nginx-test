@@ -1,12 +1,9 @@
 #!/bin/bash
-SERVICE_NAME=cuongtv-service
-CLUSTER_NAME=cuongtv-clus
 BUILD_NUMBER=${CIRCLE_BUILD_NUM}
 IMAGE_TAG=${CIRCLE_SHA1}
-TASK_FAMILY=cuongtv-fargate
 
 # Create a new task definition for this build
-sed -e "s/%IMAGE_TAG%/${IMAGE_TAG}/g; s/%AWS_ACCOUNT%/$AWS_ACCOUNT/g; s/%AWS_REGION%/$AWS_REGION/g; s/%AWS_REPO%/$AWS_REPO/g; s/%BRANCH%/$CIRCLE_BRANCH/g" fargate-template-task.json > task-${BUILD_NUMBER}.json
+sed -e "s/%IMAGE_TAG%/${IMAGE_TAG}/g; s/%AWS_ACCOUNT%/$AWS_ACCOUNT/g; s/%AWS_REGION%/$AWS_REGION/g; s/%AWS_REPO%/$AWS_REPO/g; s/%BRANCH%/${CIRCLE_BRANCH}/g" fargate-template-task.json > task-${BUILD_NUMBER}.json
 aws ecs register-task-definition --family ${TASK_FAMILY} --cli-input-json file://task-${BUILD_NUMBER}.json
 
 # Update the service with the new task definition and desired count
