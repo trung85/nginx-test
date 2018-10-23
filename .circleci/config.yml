@@ -16,7 +16,7 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - restore_cache:
-          key: requirements.txt
+          key: v1-requirements.txt
       - run:
           name: Install aws cli
           command: |
@@ -30,7 +30,7 @@ jobs:
 #            source ~/.bashrc
 #            pip install awscli --upgrade --user
       - save_cache:
-          key: requirements.txt
+          key: v1-requirements.txt
           paths:
             -"venv"
       - run: |
