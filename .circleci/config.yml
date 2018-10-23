@@ -6,7 +6,6 @@ jobs:
     steps:
       - checkout # check out the code in the project directory
       - setup_remote_docker:
-          docker_layer_caching: true
       - run:
           name: Install Docker client
           command: |
@@ -17,7 +16,7 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - restore_cache:
-          key: v1-{{ cheksum "requirements.txt" }}
+          key: requirements.txt
       - run:
           name: Install aws cli
           command: |
@@ -31,7 +30,7 @@ jobs:
 #            source ~/.bashrc
 #            pip install awscli --upgrade --user
       - save_cache:
-          key: v1-{{ cheksum "requirements.txt" }}
+          key: requirements.txt
           paths:
             -"venv"
       - run: |
