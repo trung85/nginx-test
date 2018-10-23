@@ -7,7 +7,7 @@ sed -e "s/%IMAGE_TAG%/${IMAGE_TAG}/g; s/%AWS_ACCOUNT%/$AWS_ACCOUNT/g; s/%AWS_REG
 aws ecs register-task-definition --family ${TASK_FAMILY} --cli-input-json file://task-${BUILD_NUMBER}.json
 
 # Update the service with the new task definition and desired count
-TASK_REVISION=`aws ecs describe-task-definition --task-definition ${TASK_FAMILY} | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//'` | tr -d ,
+TASK_REVISION=`aws ecs describe-task-definition --task-definition ${TASK_FAMILY} | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//' | tr -d ,`
 DESIRED_COUNT=`aws ecs describe-services --cluster ${CLUSTER_NAME} --services ${SERVICE_NAME} | egrep "desiredCount" | head -1 | tr "/" " " | awk '{print $2}' | sed 's/,$//'`
 if [ ${DESIRED_COUNT} = "0" ]; then
     DESIRED_COUNT="1"
