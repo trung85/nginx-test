@@ -5,7 +5,7 @@ jobs:
       - image: ubuntu:16.04 # the primary container, where your job's commands are run
     steps:
       - checkout # check out the code in the project directory
-      - setup_remote_docker:
+      - setup_remote_docker
       - run:
           name: Install Docker client
           command: |
@@ -16,7 +16,7 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - restore_cache:
-          key: v1-{{ checksum "requirements.txt" }}
+          key: v1-requirements.txt
       - run:
           name: Install aws cli
           command: |
