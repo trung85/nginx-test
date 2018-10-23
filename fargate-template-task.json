@@ -1,11 +1,10 @@
 
 {
-    "family": "<TASK FAMILY>", 
     "networkMode": "awsvpc", 
     "containerDefinitions": [
         {
             "name": "app", 
-            "image": "922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:%IMAGE_TAG%", 
+            "image": "$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/cuongtv:%IMAGE_TAG%", 
             "portMappings": [
                 {
                     "containerPort": 80, 
@@ -19,7 +18,7 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "executionRoleArn": "arn:aws:iam::922555486444:role/ecsTaskExecutionRole", 
+    "executionRoleArn": "arn:aws:iam::$AWS_ACCOUNT:role/ecsTaskExecutionRole", 
     "cpu": "256", 
     "memory": "512"
 }

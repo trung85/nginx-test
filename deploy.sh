@@ -1,13 +1,13 @@
 #!/bin/bash
-SERVICE_NAME=cuongtv-service
-CLUSTER_NAME=cuongtv-clus
+SERVICE_NAME=$SERVICE_NAME
+CLUSTER_NAME=$CLUSTER_NAME
 BUILD_NUMBER=${CIRCLE_BUILD_NUM}
 IMAGE_TAG=${CIRCLE_SHA1}
-TASK_FAMILY=cuongtv-fargate
+TASK_FAMILY=$TASK_FAMILY
 
 # Create a new task definition for this build
-sed -e "s;%IMAGE_TAG%;${IMAGE_TAG};g" fargate-task.json > cuongtv-${BUILD_NUMBER}.json
-aws ecs register-task-definition --family ${TASK_FAMILY} --cli-input-json file://cuongtv-${BUILD_NUMBER}.json
+sed -e "s;%IMAGE_TAG%;${IMAGE_TAG};g" fargate-template-task.json > task-${BUILD_NUMBER}.json
+aws ecs register-task-definition --family ${TASK_FAMILY} --cli-input-json file://task-${BUILD_NUMBER}.json
 
 # Update the service with the new task definition and desired count
 TASK_REVISION=`aws ecs describe-task-definition --task-definition ${TASK_FAMILY} | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//'`

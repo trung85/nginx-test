@@ -47,8 +47,8 @@ jobs:
             $(aws ecr get-login)
           
             # push image to ecr
-            docker tag app 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
-            docker push 922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_$CIRCLE_BRANCH_$CIRCLE_SHA1
+            docker tag app $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPO:$CIRCLE_BRANCH_$CIRCLE_SHA1
+            docker push $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPO:$CIRCLE_BRANCH_$CIRCLE_SHA1
 
       - run:
           name: deploy
