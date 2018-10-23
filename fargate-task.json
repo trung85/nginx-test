@@ -1,11 +1,11 @@
 
 {
-    "family": "cuongtv-fargate", 
+    "family": "<TASK FAMILY>", 
     "networkMode": "awsvpc", 
     "containerDefinitions": [
         {
             "name": "app", 
-            "image": "922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:nginx_circleci_e04e0f2dd20d96f73d96c78d163807672c0b02a3", 
+            "image": "922555486444.dkr.ecr.us-east-2.amazonaws.com/cuongtv:%IMAGE_TAG%", 
             "portMappings": [
                 {
                     "containerPort": 80, 
