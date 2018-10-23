@@ -7,7 +7,7 @@ TASK_FAMILY=$TASK_FAMILY
 
 # Create a new task definition for this build
 sed -e "s;%IMAGE_TAG%;${IMAGE_TAG};g" fargate-template-task.json > task-${BUILD_NUMBER}.json
-aws ecs register-task-definition --family ${TASK_FAMILY} --cli-input-json file://task-${BUILD_NUMBER}.json
+aws ecs register-task-definition --family ${TASK_FAMILY} --execution-role-arn $EXECUTION_ROLE_ARN --cli-input-json file://task-${BUILD_NUMBER}.json
 
 # Update the service with the new task definition and desired count
 TASK_REVISION=`aws ecs describe-task-definition --task-definition ${TASK_FAMILY} | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//'`
