@@ -16,6 +16,31 @@ jobs:
             curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
+      - run: |
+          docker build -t app .
+      - run:
+          name: Test image
+          command: |
+            docker run -d -p 80:80 --name build-image app
+            sleep 10
+            docker run --network container:build-image appropriate/curl --retry 10 --retry-connrefused http://localhost:8080 |grep CuongTV
+      - run:
+          name: Save image to an archive
+          command: |
+            mkdir docker-image
+            docker save -o docker-image/image.tar app
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docker-image
+  deploy:
+    docker:
+      - image: ubuntu:16.04
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: workspace   
       - restore_cache:
           key: v1-requirements.txt
       - run:
@@ -25,17 +50,14 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
-#            curl -O https://bootstrap.pypa.io/get-pip.py
-#            python3 get-pip.py --user
-#            export PATH=~/.local/bin:$PATH
-#            source ~/.bashrc
-#            pip install awscli --upgrade --user
       - save_cache:
           key: v1-requirements.txt
           paths:
             - "venv"
-      - run: |
-          docker build -t app .
+      - run:
+          name: Load image
+          command: |
+            docker load --input workspace/docker-image/image.tar            
       - run:
           name: Push Docker image
           command: |
@@ -45,7 +67,7 @@ jobs:
             aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             $(aws ecr get-login)
-          
+
             # push image to ecr
             docker tag app $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPO:${CIRCLE_BRANCH}_$CIRCLE_SHA1
             docker push $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPO:${CIRCLE_BRANCH}_$CIRCLE_SHA1
@@ -54,5 +76,16 @@ jobs:
           name: deploy
           command: |
             # deploy
-            . venv/bin/activate 
-            sh deploy.sh
+            . venv/bin/activate
+            sh deploy.sh            
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
