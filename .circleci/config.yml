@@ -22,8 +22,7 @@ jobs:
           name: Test image
           command: |
             docker run -d -p 80:80 --name build-image app
-            sleep 10
-            docker run --network container:build-image app http://localhost:80 |grep CuongTV
+            curl localhost |grep CuongTV
       - run:
           name: Save image to an archive
           command: |
