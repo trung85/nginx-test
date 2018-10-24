@@ -23,7 +23,7 @@ jobs:
           command: |
             docker run -d -p 80:80 --name build-image app
             sleep 10
-            docker run --network container:build-image appropriate/curl --retry 10 --retry-connrefused http://localhost:8080 |grep CuongTV
+            docker run --network container:build-image app --retry 10 --retry-connrefused http://localhost:8080 |grep CuongTV
       - run:
           name: Save image to an archive
           command: |
